@@ -9,18 +9,18 @@ class Paciente:
         Paciente.pacientes.append(self.paciente)
 
         print(f"""\n****** PACIENTE CADASTRADO COM SUCESSO *****\n
-                Nome: {self.nome}\n
-                Idade: {self.idade}\n
+                \n Nome: {self.nome}
+                \n Idade: {self.idade}\n
                 """)
 
     def visualizarConsulta(self):
         for consulta in self.historico:
-            print(f"""\n *********** Histórico ***********
+            print(f"""\n *********** HISTÓRICO ***********\n
                         \n Data da consulta: {consulta[0]}
                         \n Paciente: {consulta[1]}
                         \n Médico responsável: {consulta[2]}
                         \n Diagnótico: {consulta[3]}
-                        \n Regitrado por: {consulta[4]}""")
+                        \n Regitrado por: {consulta[4]}\n""")
 
 class Funcionario:
     funcionarios = []
@@ -36,8 +36,8 @@ class Atendente(Funcionario):
         Funcionario.funcionarios.append(self.funcionario)
 
         print(f"""\n****** ATENDENTE CADASTRADO COM SUCESSO *****\n
-                Atendente: {self.nome}\n
-                Cargo: {self.cargo}\n
+                \n Atendente: {self.nome}
+                \n Cargo: {self.cargo}\n
                 """)
         
     def agendarConsulta(self, data, paciente_nome, medico_nome, diagnostico):
@@ -65,13 +65,24 @@ class Medico(Funcionario):
         Funcionario.funcionarios.append(self.funcionario)
 
         print(f"""\n****** MÉDICO CADASTRADO COM SUCESSO *****\n
-                Médico: {self.nome}\n
-                Cargo: {self.cargo}\n
-                Especialidade: {self.especialidade}\n
-                CRM: {self.crm}""")
+                \n Médico: {self.nome}
+                \n Cargo: {self.cargo}
+                \n Especialidade: {self.especialidade}
+                \n CRM: {self.crm}\n""")
 
-    # def prescreverMedicamento(self, paciente_nome, medicamento):
-        # paciente = paciente_nome
+    def prescreverMedicamento(self, paciente_nome, medicamento, prescricao):
+        for paciente in Paciente.pacientes:
+            if paciente['Nome'] == paciente_nome:
+                print(f"""\n*********** RECEITA ***********\n
+                        \n Paciente: {paciente_nome}
+                        \n Medicamento: {medicamento}
+                        \n Prescrição: {prescricao}
+                        \n Assinatura do Médico: {self.nome}\n""")
+                break
+            else:
+                print('Paciente não encontrado.')
+
+    # def realizarExame(self, )
 
 class Enfermeiro(Funcionario):
     def __init__(self, nome, cargo, coren):
@@ -82,14 +93,18 @@ class Enfermeiro(Funcionario):
         # print(Funcionario.funcionarios)
 
         print(f"""\n****** ENFERMEIRO CADASTRADO COM SUCESSO *****\n
-                Enfermeiro: {self.nome}\n
-                Cargo: {self.cargo}\n
-                COREN: {self.coren}""")
+                \n Enfermeiro: {self.nome}
+                \n Cargo: {self.cargo}
+                \n COREN: {self.coren}\n""")
+        
+    # def aplicarInjecao()
 
 pac = Paciente('Caroline', '26')
 med = Medico('José', 'Médico', 'Oftalmologista', 12345)
 ate = Atendente('Fernando', 'Atendente')
-# enf = Enfermeiro('Julia', 'Enfermeira', 54321)
+enf = Enfermeiro('Julia', 'Enfermeira', 54321)
 
 ate.agendarConsulta('06/03/2024', 'Caroline', 'José', 'Sintomas gripais, remedio administrado.')
 pac.visualizarConsulta()
+
+med.prescreverMedicamento('Caroline','Dipirona','tomar de 8 em 8h')
