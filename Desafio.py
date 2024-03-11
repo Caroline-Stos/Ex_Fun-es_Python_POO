@@ -11,15 +11,6 @@ class Paciente:
         print(f"""\n****** PACIENTE CADASTRADO COM SUCESSO *****\n
                 \n Nome: {self.nome}
                 \n Idade: {self.idade}\n""")
-                
-    def visualizarConsulta(self):
-        for consulta in self.historico:
-            print(f"""\n*********** HISTÓRICO ***********\n
-                        \n Data da consulta: {consulta[0]}
-                        \n Paciente: {consulta[1]}
-                        \n Médico responsável: {consulta[2]}
-                        \n Diagnótico: {consulta[3]}
-                        \n Regitrado por: {consulta[4]}\n""")
 
 class Funcionario:
     funcionarios = []
@@ -27,6 +18,16 @@ class Funcionario:
     def __init__(self, nome, cargo):
         self.nome = nome
         self.cargo = cargo  
+
+    def visualizarConsulta(self):
+        for paciente in Paciente.pacientes:
+            for consulta in paciente['Historico']:
+                print(f"""\n*********** CONSULTAS AGENDADAS ***********\n
+                            \n Data da consulta: {consulta[0]}
+                            \n Paciente: {consulta[1]}
+                            \n Médico: {consulta[2]}
+                            \n Especialidade: {consulta[3]}
+                            \n Regitrado por: {consulta[4]}\n""")
                 
 class Atendente(Funcionario):
     def __init__(self, nome, cargo):
@@ -38,26 +39,21 @@ class Atendente(Funcionario):
                 \n Atendente: {self.nome}
                 \n Cargo: {self.cargo}\n""")
         
-    def agendarConsulta(self, data, paciente_nome, medico_nome, especialidade):
+    def agendarConsulta(self, data_cs, paciente_nome, medico_nome, especialidade):
         responsavel = self.nome
         for paciente in Paciente.pacientes:
             if paciente['Nome'] == paciente_nome:
                 for funcionario in Funcionario.funcionarios:
                     if funcionario['Nome'] == medico_nome:
-                        consulta = (data, paciente_nome, medico_nome, especialidade, responsavel)
+                        consulta = (data_cs, paciente_nome, medico_nome, especialidade, responsavel)
                         paciente['Historico'].append(consulta)
-                        print(f"""\n ************ CONSULTA AGENDADA ************\n
-                                    \n Data: {data}
-                                    \n Paciente: {paciente_nome}
-                                    \n Médico: {medico_nome}
-                                    \n Especialidade: {especialidade}
-                                    \n Registro: {responsavel}\n""")
+                        self.visualizarConsulta()
                         break
                     else:
                         print('Médico não encontrado na base de dados.')
             else:
                 print('Paciente não encontrado na base de dados.')
-                
+        
 class Medico(Funcionario):
     def __init__(self, nome, cargo, especialidade, crm):
         super().__init__(nome, cargo)
@@ -73,26 +69,27 @@ class Medico(Funcionario):
                 \n CRM: {self.crm}\n""")
 
     def prescreverMedicamento(self, paciente_nome, medicamento, prescricao):
+        medico = self.nome
         for paciente in Paciente.pacientes:
             if paciente['Nome'] == paciente_nome:
                 print(f"""\n*********** RECEITA ***********\n
                         \n Paciente: {paciente_nome}
                         \n Medicamento: {medicamento}
                         \n Prescrição: {prescricao}
-                        \n Assinatura do Médico: {self.nome}\n""")
+                        \n Assinatura do Médico: {medico}\n""")
                 break
             else:
                 print('Paciente não encontrado.')
 
-    def realizarExame(self, data, paciente_nome, exame):
+    def realizarExame(self, data_ex, paciente_nome, exame_nome):
         medico = self.nome
         for paciente in Paciente.pacientes:
             if paciente['Nome'] == paciente_nome:
-                exame = (data, paciente_nome, medico, exame)
+                exame = (data_ex, paciente_nome, medico, exame_nome)
                 paciente['Historico'] += exame
                 print(f"""\n ************* EXAME *************\n
-                        \n Data do exame: {data}
-                        \n Exame: {exame[3]}
+                        \n Data do exame: {data_ex}
+                        \n Exame: {exame_nome}
                         \n Paciente: {paciente_nome}
                         \n Médico responsável: {medico}
                         \n Registro concluído com sucesso!\n""")
@@ -131,7 +128,9 @@ enf = Enfermeiro('Julia', 'Enfermeira', 54321)
 
 ate.agendarConsulta('06/03/2024', 'Caroline', 'José', 'Oftalmologista')
 
-pac.visualizarConsulta()
+# ate.visualizarConsulta()
+# med.visualizarConsulta()
+# enf.visualizarConsulta()
 
 med.prescreverMedicamento('Caroline','Dipirona','tomar de 8 em 8h')
 
@@ -139,7 +138,3 @@ med.realizarExame('10/03/2024','Caroline','Refração')
 
 enf.aplicarInjecao('Caroline','Benzetacil')
 
-ate.agendarConsulta('06/03/2024', 'Caroline', 'José', 'Sintomas gripais, remedio administrado.')
-pac.visualizarConsulta()
-
-med.prescreverMedicamento('Caroline','Dipirona','tomar de 8 em 8h')
